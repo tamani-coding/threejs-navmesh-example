@@ -34,7 +34,7 @@ orbitControls.minPolarAngle = Math.PI / 4        // prevent top down view
 orbitControls.update();
 
 // LIGHTS
-const dLight = new THREE.DirectionalLight('white', 0.6);
+const dLight = new THREE.DirectionalLight('white', 0.8);
 dLight.position.x = 20;
 dLight.position.y = 30;
 dLight.castShadow = true;
@@ -47,7 +47,7 @@ dLight.shadow.camera.top = d;
 dLight.shadow.camera.bottom = - d;
 scene.add(dLight);
 
-const aLight = new THREE.AmbientLight('white', 0.4);
+const aLight = new THREE.AmbientLight('white', 0.5);
 scene.add(aLight);
 
 // ATTACH RENDERER
