@@ -59,10 +59,13 @@ window.addEventListener('resize', onWindowResize);
 const agentHeight = 1.0;
 const agentRadius = 0.25;
 const agent = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'green'}));
-agent.position.z = -4;
-agent.position.x = -4;
-agent.position.y = 0.21403926610946655;
-scene.add(agent);
+agent.position.y = agentHeight / 2;
+const agentGroup = new THREE.Group();
+agentGroup.add(agent);
+agentGroup.position.z = -4;
+agentGroup.position.x = -4;
+agentGroup.position.y = 0.21403926610946655;
+scene.add(agentGroup);
 
 const loader = new GLTFLoader();
 loader.load('./glb/demo-level.glb', (gltf: GLTF) => {
@@ -83,7 +86,7 @@ loader.load('./glb/demo-level-navmesh.glb', (gltf: GLTF) => {
         if (!navmesh && node.isObject3D && node.children && node.children.length > 0) {
             navmesh = node.children[0];
             pathfinding.setZoneData(ZONE, Pathfinding.createZone(navmesh.geometry));
-            groupID = pathfinding.getGroup(ZONE, agent.position);
+            groupID = pathfinding.getGroup(ZONE, agentGroup.position);
         }
     });
 });
@@ -106,8 +109,8 @@ window.addEventListener('click', event => {
     const found = intersect(clickMouse);
     if (found.length > 0) {
         target = found[0].point;
-        const agentpos = agent.position;
-        console.log(agentpos);
+        const agentpos = agentGroup.position;
+        console.log(`agentpos: ${JSON.stringify(agentpos)}`);
         navpath = pathfinding.findPath(agentpos, target, ZONE, groupID);
         if (navpath) {
             console.log(`navpath: ${JSON.stringify(navpath)}`);
@@ -123,14 +126,13 @@ function moveTick ( delta: number ) {
     if ( !navpath || navpath.length <= 0 ) return
 
     let targetPosition = navpath[ 0 ];
-    const agentpos = agent.position;
-    const velocity = targetPosition.clone().sub( agentpos );
+    const velocity = targetPosition.clone().sub( agentGroup.position );
 
     if (velocity.lengthSq() > 0.05 * 0.05) {
         velocity.normalize();
         // Move player to target
-        agent.position.add( velocity.multiplyScalar( delta * SPEED ) );
-        pathfindinghelper.setPlayerPosition( agentpos );
+        agentGroup.position.add( velocity.multiplyScalar( delta * SPEED ) );
+        pathfindinghelper.setPlayerPosition( agentGroup.position );
     } else {
         // Remove node from the path we calculated
         navpath.shift();
