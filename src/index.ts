@@ -58,12 +58,10 @@ window.addEventListener('resize', onWindowResize);
 
 const agentHeight = 1.0;
 const agentRadius = 0.25;
-const agentYOffset = agentHeight / 2;
-const playerOffsetVector = new THREE.Vector3(0 , agentYOffset, 0);
 const agent = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'green'}));
 agent.position.z = -4;
 agent.position.x = -4;
-agent.position.y = 0.21403926610946655 + agentYOffset;
+agent.position.y = 0.21403926610946655;
 scene.add(agent);
 
 const loader = new GLTFLoader();
@@ -108,7 +106,7 @@ window.addEventListener('click', event => {
     const found = intersect(clickMouse);
     if (found.length > 0) {
         target = found[0].point;
-        const agentpos = agent.position.clone().sub(playerOffsetVector);
+        const agentpos = agent.position;
         console.log(agentpos);
         navpath = pathfinding.findPath(agentpos, target, ZONE, groupID);
         if (navpath) {
@@ -125,7 +123,7 @@ function moveTick ( delta: number ) {
     if ( !navpath || navpath.length <= 0 ) return
 
     let targetPosition = navpath[ 0 ];
-    const agentpos = agent.position.clone().sub(playerOffsetVector);
+    const agentpos = agent.position;
     const velocity = targetPosition.clone().sub( agentpos );
 
     if (velocity.lengthSq() > 0.05 * 0.05) {
