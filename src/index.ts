@@ -9,9 +9,9 @@ scene.background = new THREE.Color(0xa8def0);
 
 // CAMERA
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.y = 15;
-camera.position.z = 20;
-camera.position.x = -33;
+camera.position.y = 10;
+camera.position.z = 10;
+camera.position.x = 33;
 
 // RENDERER
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -66,7 +66,7 @@ const agent = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius
 agent.position.y = agentHeight / 2;
 const agentGroup = new THREE.Group();
 agentGroup.add(agent);
-agentGroup.position.z = 4;
+agentGroup.position.z = 0;
 agentGroup.position.x = 0;
 agentGroup.position.y = 1;
 scene.add(agentGroup);
@@ -106,6 +106,7 @@ function intersect(pos: THREE.Vector2) {
 }
 
 window.addEventListener('click', event => {
+    if (navpath && navpath.length > 0) return;
     // THREE RAYCASTER
     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
