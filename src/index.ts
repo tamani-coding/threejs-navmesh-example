@@ -106,7 +106,6 @@ function intersect(pos: THREE.Vector2) {
 }
 
 window.addEventListener('click', event => {
-    if (navpath && navpath.length > 0) return;
     // THREE RAYCASTER
     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -117,7 +116,10 @@ window.addEventListener('click', event => {
         const agentpos = agentGroup.position;
         // console.log(`agentpos: ${JSON.stringify(agentpos)}`);
         // console.log(`target: ${JSON.stringify(target)}`);
-        navpath = pathfinding.findPath(agentpos, target, ZONE, groupID);
+
+        // find closest node to agent, just in case agent is out of bounds
+        const closest = pathfinding.getClosestNode(agentpos, ZONE, groupID);
+        navpath = pathfinding.findPath(closest.centroid, target, ZONE, groupID);
         if (navpath) {
             // console.log(`navpath: ${JSON.stringify(navpath)}`);
             pathfindinghelper.reset();
