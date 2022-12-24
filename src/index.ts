@@ -110,10 +110,11 @@ window.addEventListener('click', event => {
     if (found.length > 0) {
         target = found[0].point;
         const agentpos = agentGroup.position;
-        console.log(`agentpos: ${JSON.stringify(agentpos)}`);
+        // console.log(`agentpos: ${JSON.stringify(agentpos)}`);
+        // console.log(`target: ${JSON.stringify(target)}`);
         navpath = pathfinding.findPath(agentpos, target, ZONE, groupID);
         if (navpath) {
-            console.log(`navpath: ${JSON.stringify(navpath)}`);
+            // console.log(`navpath: ${JSON.stringify(navpath)}`);
             pathfindinghelper.reset();
             pathfindinghelper.setPlayerPosition(agentpos);
             pathfindinghelper.setTargetPosition(target);
@@ -132,7 +133,6 @@ function moveTick ( delta: number ) {
         velocity.normalize();
         // Move player to target
         agentGroup.position.add( velocity.multiplyScalar( delta * SPEED ) );
-        pathfindinghelper.setPlayerPosition( agentGroup.position );
     } else {
         // Remove node from the path we calculated
         navpath.shift();
