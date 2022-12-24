@@ -14,4 +14,4 @@ See:
 
 [UPBGE](https://upbge.org/) - used for building level mesh and the navmesh
 
-Check out the `blender` folder for level and navmesh.
+Blender project is inside `blender` folder and can be opened with UPBGE. GLB files (level and navmesh) are contained in `dist/glb`.
