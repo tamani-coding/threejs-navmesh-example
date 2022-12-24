@@ -10,8 +10,8 @@ See:
 
 [threejs](https://threejs.org/) - the web 3d framework
 
-[three-pathfinding](three-pathfinding) - pathfinding via navmesh in threejs
+[three-pathfinding](https://github.com/donmccurdy/three-pathfinding) - pathfinding via navmesh in threejs
 
-[UPBGE](https://upbge.org/#/) - used for building level mesh and the navmesh
+[UPBGE](https://upbge.org/) - used for building level mesh and the navmesh
 
 Check out the `blender` folder for level and navmesh.
