@@ -59,6 +59,7 @@ window.addEventListener('resize', onWindowResize);
 const agentHeight = 1.0;
 const agentRadius = 0.25;
 const agentYOffset = agentHeight / 2;
+const playerOffsetVector = new THREE.Vector3(0 , agentYOffset, 0);
 const agent = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'green'}));
 agent.position.z = -4;
 agent.position.x = -4;
@@ -70,11 +71,11 @@ loader.load('./glb/demo-level.glb', (gltf: GLTF) => {
     scene.add(gltf.scene);
 });
 
-
 const pathfinding = new Pathfinding();
 const pathfindinghelper = new PathfindingHelper();
 scene.add(pathfindinghelper);
 const ZONE = 'level1';
+const SPEED = 5;
 let navmesh;
 let groupID;
 let navpath;
@@ -93,7 +94,6 @@ loader.load('./glb/demo-level-navmesh.glb', (gltf: GLTF) => {
 const raycaster = new THREE.Raycaster(); // create once
 const clickMouse = new THREE.Vector2();  // create once
 let target: THREE.Vector3 = null;
-let threePath: THREE.Line = null;
 
 function intersect(pos: THREE.Vector2) {
     raycaster.setFromCamera(pos, camera);
@@ -118,7 +118,26 @@ window.addEventListener('click', event => {
     }
 })
 
+function moveTick ( delta: number ) {
+    if ( !navpath || navpath.length <= 0 ) return
+
+    let targetPosition = navpath[ 0 ];
+    const velocity = targetPosition.clone().add(playerOffsetVector).sub( agent.position );
+
+    if (velocity.lengthSq() > 0.05 * 0.05) {
+        velocity.normalize();
+        // Move player to target
+        agent.position.add( velocity.multiplyScalar( delta * SPEED ) );
+        pathfindinghelper.setPlayerPosition( agent.position );
+    } else {
+        // Remove node from the path we calculated
+        navpath.shift();
+    }
+}
+
+const clock = new THREE.Clock();
 let gameLoop = () => {
+    moveTick(clock.getDelta());
     orbitControls.update()
     renderer.render(scene, camera);
     setTimeout(gameLoop, 16);
