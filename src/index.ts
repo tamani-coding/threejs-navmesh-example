@@ -25,8 +25,8 @@ orbitControls.enableDamping = true
 orbitControls.enablePan = true
 orbitControls.minDistance = 5
 orbitControls.maxDistance = 30
-// orbitControls.maxPolarAngle = Math.PI / 2 - 0.05 // prevent camera below ground
-// orbitControls.minPolarAngle = Math.PI / 4        // prevent top down view
+orbitControls.maxPolarAngle = Math.PI / 2 - 0.05 // prevent camera below ground
+orbitControls.minPolarAngle = Math.PI / 4        // prevent top down view
 orbitControls.update();
 
 const dLight = new THREE.DirectionalLight('white', 0.6);
@@ -108,10 +108,13 @@ window.addEventListener('click', event => {
     const found = intersect(clickMouse);
     if (found.length > 0) {
         target = found[0].point;
-        console.log(`click point: ${JSON.stringify(target)}`);
-        navpath = navpath = pathfinding.findPath(agent.position, target, ZONE, groupID);
+        const agentpos = agent.position.clone().sub(playerOffsetVector);
+        console.log(agentpos);
+        navpath = pathfinding.findPath(agentpos, target, ZONE, groupID);
         if (navpath) {
-            pathfindinghelper.setPlayerPosition(agent.position);
+            console.log(`navpath: ${JSON.stringify(navpath)}`);
+            pathfindinghelper.reset();
+            pathfindinghelper.setPlayerPosition(agentpos);
             pathfindinghelper.setTargetPosition(target);
             pathfindinghelper.setPath(navpath);
         }
@@ -122,13 +125,14 @@ function moveTick ( delta: number ) {
     if ( !navpath || navpath.length <= 0 ) return
 
     let targetPosition = navpath[ 0 ];
-    const velocity = targetPosition.clone().add(playerOffsetVector).sub( agent.position );
+    const agentpos = agent.position.clone().sub(playerOffsetVector);
+    const velocity = targetPosition.clone().sub( agentpos );
 
     if (velocity.lengthSq() > 0.05 * 0.05) {
         velocity.normalize();
         // Move player to target
         agent.position.add( velocity.multiplyScalar( delta * SPEED ) );
-        pathfindinghelper.setPlayerPosition( agent.position );
+        pathfindinghelper.setPlayerPosition( agentpos );
     } else {
         // Remove node from the path we calculated
         navpath.shift();
