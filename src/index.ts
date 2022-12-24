@@ -9,9 +9,9 @@ scene.background = new THREE.Color(0xa8def0);
 
 // CAMERA
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.y = 5;
-camera.position.z = 10;
-camera.position.x = -13;
+camera.position.y = 15;
+camera.position.z = 20;
+camera.position.x = -33;
 
 // RENDERER
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -21,10 +21,14 @@ renderer.shadowMap.enabled = true
 
 // ORBIT CAMERA CONTROLS
 const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.mouseButtons = {
+	MIDDLE: THREE.MOUSE.ROTATE,
+	RIGHT: THREE.MOUSE.PAN
+}
 orbitControls.enableDamping = true
 orbitControls.enablePan = true
 orbitControls.minDistance = 5
-orbitControls.maxDistance = 30
+orbitControls.maxDistance = 60
 orbitControls.maxPolarAngle = Math.PI / 2 - 0.05 // prevent camera below ground
 orbitControls.minPolarAngle = Math.PI / 4        // prevent top down view
 orbitControls.update();
@@ -62,9 +66,9 @@ const agent = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius
 agent.position.y = agentHeight / 2;
 const agentGroup = new THREE.Group();
 agentGroup.add(agent);
-agentGroup.position.z = -4;
-agentGroup.position.x = -4;
-agentGroup.position.y = 0.21403926610946655;
+agentGroup.position.z = 4;
+agentGroup.position.x = 0;
+agentGroup.position.y = 1;
 scene.add(agentGroup);
 
 const loader = new GLTFLoader();
