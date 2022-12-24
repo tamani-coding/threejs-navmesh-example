@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { Pathfinding } from 'three-pathfinding';
+import { Pathfinding, PathfindingHelper } from 'three-pathfinding';
 
 // SCENE
 const scene = new THREE.Scene();
@@ -72,6 +72,8 @@ loader.load('./glb/demo-level.glb', (gltf: GLTF) => {
 
 
 const pathfinding = new Pathfinding();
+const pathfindinghelper = new PathfindingHelper();
+scene.add(pathfindinghelper);
 const ZONE = 'level1';
 let navmesh;
 let groupID;
@@ -109,26 +111,12 @@ window.addEventListener('click', event => {
         console.log(`click point: ${JSON.stringify(target)}`);
         navpath = navpath = pathfinding.findPath(agent.position, target, ZONE, groupID);
         if (navpath) {
-            drawLine(navpath);
+            pathfindinghelper.setPlayerPosition(agent.position);
+            pathfindinghelper.setTargetPosition(target);
+            pathfindinghelper.setPath(navpath);
         }
     }
 })
-
-function drawLine(navpath: THREE.Vector3[]) {
-    if (threePath) {
-        threePath.removeFromParent();
-    }
-    let points: THREE.Vector3[] = [];
-    points.push(agent.position);
-    points = points.concat(navpath.map(p => new THREE.Vector3(p.x, p.y + agentYOffset, p.z)));
-
-    const geometry = new THREE.BufferGeometry().setFromPoints( points );
-    const material = new THREE.LineBasicMaterial({
-        color: 0x55aaff
-    });
-    threePath = new THREE.Line( geometry, material );
-    scene.add( threePath );
-}
 
 let gameLoop = () => {
     orbitControls.update()
