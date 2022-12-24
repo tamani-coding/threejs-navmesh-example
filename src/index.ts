@@ -33,6 +33,7 @@ orbitControls.maxPolarAngle = Math.PI / 2 - 0.05 // prevent camera below ground
 orbitControls.minPolarAngle = Math.PI / 4        // prevent top down view
 orbitControls.update();
 
+// LIGHTS
 const dLight = new THREE.DirectionalLight('white', 0.6);
 dLight.position.x = 20;
 dLight.position.y = 30;
@@ -49,7 +50,7 @@ scene.add(dLight);
 const aLight = new THREE.AmbientLight('white', 0.4);
 scene.add(aLight);
 
-// ANIMATE
+// ATTACH RENDERER
 document.body.appendChild(renderer.domElement);
 
 // RESIZE HANDLER
@@ -60,6 +61,7 @@ function onWindowResize() {
 }
 window.addEventListener('resize', onWindowResize);
 
+// AGENT
 const agentHeight = 1.0;
 const agentRadius = 0.25;
 const agent = new THREE.Mesh(new THREE.CylinderGeometry(agentRadius, agentRadius, agentHeight), new THREE.MeshPhongMaterial({ color: 'green'}));
@@ -71,11 +73,13 @@ agentGroup.position.x = 0;
 agentGroup.position.y = 1;
 scene.add(agentGroup);
 
+// LOAD LEVEL
 const loader = new GLTFLoader();
 loader.load('./glb/demo-level.glb', (gltf: GLTF) => {
     scene.add(gltf.scene);
 });
 
+// INITIALIZE THREE-PATHFINDING
 const pathfinding = new Pathfinding();
 const pathfindinghelper = new PathfindingHelper();
 scene.add(pathfindinghelper);
@@ -104,7 +108,6 @@ function intersect(pos: THREE.Vector2) {
     raycaster.setFromCamera(pos, camera);
     return raycaster.intersectObjects(scene.children);
 }
-
 window.addEventListener('click', event => {
     // THREE RAYCASTER
     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -130,6 +133,7 @@ window.addEventListener('click', event => {
     }
 })
 
+// MOVEMENT ALONG PATH
 function moveTick ( delta: number ) {
     if ( !navpath || navpath.length <= 0 ) return
 
@@ -146,6 +150,7 @@ function moveTick ( delta: number ) {
     }
 }
 
+// GAMELOOP
 const clock = new THREE.Clock();
 let gameLoop = () => {
     moveTick(clock.getDelta());
