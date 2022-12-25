@@ -94,7 +94,6 @@ loader.load('./glb/demo-level-navmesh.glb', (gltf: GLTF) => {
         if (!navmesh && node.isObject3D && node.children && node.children.length > 0) {
             navmesh = node.children[0];
             pathfinding.setZoneData(ZONE, Pathfinding.createZone(navmesh.geometry));
-            groupID = pathfinding.getGroup(ZONE, agentGroup.position);
         }
     });
 });
@@ -120,6 +119,7 @@ window.addEventListener('click', event => {
         // console.log(`agentpos: ${JSON.stringify(agentpos)}`);
         // console.log(`target: ${JSON.stringify(target)}`);
 
+        groupID = pathfinding.getGroup(ZONE, agentGroup.position);
         // find closest node to agent, just in case agent is out of bounds
         const closest = pathfinding.getClosestNode(agentpos, ZONE, groupID);
         navpath = pathfinding.findPath(closest.centroid, target, ZONE, groupID);
