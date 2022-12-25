@@ -156,6 +156,6 @@ let gameLoop = () => {
     moveTick(clock.getDelta());
     orbitControls.update()
     renderer.render(scene, camera);
-    setTimeout(gameLoop, 16);
+    requestAnimationFrame(gameLoop);
 };
 gameLoop();
