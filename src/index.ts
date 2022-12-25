@@ -101,7 +101,6 @@ loader.load('./glb/demo-level-navmesh.glb', (gltf: GLTF) => {
 // RAYCASTING
 const raycaster = new THREE.Raycaster(); // create once
 const clickMouse = new THREE.Vector2();  // create once
-let target: THREE.Vector3 = null;
 
 function intersect(pos: THREE.Vector2) {
     raycaster.setFromCamera(pos, camera);
@@ -114,7 +113,7 @@ window.addEventListener('click', event => {
   
     const found = intersect(clickMouse);
     if (found.length > 0) {
-        target = found[0].point;
+        let target = found[0].point;
         const agentpos = agentGroup.position;
         // console.log(`agentpos: ${JSON.stringify(agentpos)}`);
         // console.log(`target: ${JSON.stringify(target)}`);
@@ -134,16 +133,16 @@ window.addEventListener('click', event => {
 })
 
 // MOVEMENT ALONG PATH
-function moveTick ( delta: number ) {
+function move ( delta: number ) {
     if ( !navpath || navpath.length <= 0 ) return
 
     let targetPosition = navpath[ 0 ];
-    const velocity = targetPosition.clone().sub( agentGroup.position );
+    const distance = targetPosition.clone().sub( agentGroup.position );
 
-    if (velocity.lengthSq() > 0.05 * 0.05) {
-        velocity.normalize();
+    if (distance.lengthSq() > 0.05 * 0.05) {
+        distance.normalize();
         // Move player to target
-        agentGroup.position.add( velocity.multiplyScalar( delta * SPEED ) );
+        agentGroup.position.add( distance.multiplyScalar( delta * SPEED ) );
     } else {
         // Remove node from the path we calculated
         navpath.shift();
@@ -153,7 +152,7 @@ function moveTick ( delta: number ) {
 // GAMELOOP
 const clock = new THREE.Clock();
 let gameLoop = () => {
-    moveTick(clock.getDelta());
+    move(clock.getDelta());
     orbitControls.update()
     renderer.render(scene, camera);
     requestAnimationFrame(gameLoop);
